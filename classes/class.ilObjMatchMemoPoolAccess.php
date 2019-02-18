@@ -28,29 +28,14 @@ class ilObjMatchMemoPoolAccess extends ilObjectPluginAccess
 	*/
 	function _checkAccess($a_cmd, $a_permission, $a_ref_id, $a_obj_id, $a_user_id = "")
 	{
-		global $ilUser, $ilAccess;
-
-		if ($a_user_id == "")
-		{
-			$a_user_id = $ilUser->getId();
-		}
-
-		switch ($a_permission)
-		{
-			case "read":
-				if (!$ilAccess->checkAccessOfUser($a_user_id, "write", "", $a_ref_id))
-				{
-				#	return false;
-				}
-				break;
-		}
-
 		return true;
 	}
 	
 	public static function _lookupOnline($a_obj_id, $is_reference = false)
 	{
-		global $ilDB;
+		global $DIC;
+
+		$ilDB = $DIC->database();
 
 		if ($is_reference) $a_obj_id = ilObject::_lookupObjId($a_obj_id);
 		$result = $ilDB->queryF("SELECT isonline FROM rep_robj_xmpl_object WHERE obj_fi = %s",

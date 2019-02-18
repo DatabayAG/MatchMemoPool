@@ -50,7 +50,9 @@ class ilObjMatchMemoPool extends ilObjectPlugin
 	*/
 	function doCreate()
 	{
-		global $ilDB;
+		global $DIC;
+
+		$ilDB = $DIC->database();
 
 		$ilDB->manipulateF(
 			"INSERT INTO rep_robj_xmpl_object (obj_fi, isonline) VALUES(%s, %s)",
@@ -68,7 +70,9 @@ class ilObjMatchMemoPool extends ilObjectPlugin
 	*/
 	function doRead()
 	{
-		global $ilDB;
+		global $DIC;
+
+		$ilDB = $DIC->database();
 
 		$result = $ilDB->queryF("SELECT * FROM rep_robj_xmpl_object WHERE obj_fi = %s",
 			array('integer'),
@@ -87,7 +91,11 @@ class ilObjMatchMemoPool extends ilObjectPlugin
 	
 	public function createEmptyPair($title = null, $author = null, $description = null, $card1 = null, $card2 = null, $solution = null)
 	{
-		global $ilDB, $ilUser;
+		global $DIC;
+
+		$ilDB = $DIC->database();
+		$ilUser = $DIC->user();
+
 		include_once("./Services/RTE/classes/class.ilRTE.php");
 		$next_id = $ilDB->nextId('rep_robj_xmpl_pair');
 		$result = $ilDB->manipulateF("INSERT INTO rep_robj_xmpl_pair (pair_id, obj_fi, owner, title, author, description, card1, card2, solution, created, tstamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
@@ -111,7 +119,10 @@ class ilObjMatchMemoPool extends ilObjectPlugin
 
 	public function savePair()
 	{
-		global $ilDB, $ilUser;
+		global $DIC;
+
+		$ilDB = $DIC->database();
+
 		include_once("./Services/RTE/classes/class.ilRTE.php");
 		$affectedRows = $ilDB->manipulateF("UPDATE rep_robj_xmpl_pair SET title = %s, author = %s, description = %s, card1 = %s, card2 = %s, solution = %s, tstamp = %s WHERE pair_id = %s",
 			array('text','text','text','text','text','text','integer','integer'),
@@ -136,7 +147,9 @@ class ilObjMatchMemoPool extends ilObjectPlugin
 	*/
 	function doUpdate()
 	{
-		global $ilDB;
+		global $DIC;
+
+		$ilDB = $DIC->database();
 
 		$res = $ilDB->queryF("SELECT * FROM rep_robj_xmpl_object WHERE obj_fi = %s",
 			array('integer'),
@@ -168,7 +181,9 @@ class ilObjMatchMemoPool extends ilObjectPlugin
 	*/
 	function doDelete()
 	{
-		global $ilDB;
+		global $DIC;
+
+		$ilDB = $DIC->database();
 
 		$affectedRows = $ilDB->manipulateF("DELETE FROM rep_robj_xmpl_object WHERE obj_fi = %s",
 			array('integer'),
@@ -373,7 +388,10 @@ class ilObjMatchMemoPool extends ilObjectPlugin
 
 	public function deletePair($id)
 	{
-		global $ilDB;
+		global $DIC;
+
+		$ilDB = $DIC->database();
+
 		$affectedRows = $ilDB->manipulateF("DELETE FROM rep_robj_xmpl_pair WHERE pair_id = %s",
 			array('integer'),
 			array($id)
@@ -383,7 +401,9 @@ class ilObjMatchMemoPool extends ilObjectPlugin
 
 	public function updatePairCount()
 	{
-		global $ilDB;
+		global $DIC;
+
+		$ilDB = $DIC->database();
 
 		$result = $ilDB->queryF("SELECT pair_id FROM rep_robj_xmpl_pair WHERE obj_fi = %s AND original_id IS NULL AND tstamp > %s",
 			array("integer", "integer"),
@@ -397,7 +417,9 @@ class ilObjMatchMemoPool extends ilObjectPlugin
 
 	public static function _updatePairCount($mpl)
 	{
-		global $ilDB;
+		global $DIC;
+
+		$ilDB = $DIC->database();
 
 		$result = $ilDB->queryF("SELECT pair_id FROM rep_robj_xmpl_pair WHERE obj_fi = %s AND original_id IS NULL AND tstamp > %s",
 			array("integer", "integer"),
@@ -414,7 +436,10 @@ class ilObjMatchMemoPool extends ilObjectPlugin
 	*/
 	public function purgePairs()
 	{
-		global $ilDB, $ilUser;
+		global $DIC;
+
+		$ilDB = $DIC->database();
+		$ilUser = $DIC->user();
 
 		$result = $ilDB->queryF("SELECT pair_id FROM rep_robj_xmpl_pair WHERE owner = %s AND tstamp = %s",
 			array("integer", "integer"),
@@ -442,15 +467,15 @@ class ilObjMatchMemoPool extends ilObjectPlugin
 	*/
 	public function loadPair($id)
 	{
-		global $ilDB, $ilUser;
-
 		$this->plugin->includeClass("class.ilMatchMemoPair.php");
 		$this->pair = ilMatchMemoPair::_loadFromDB($id);
 	}
 
 	public function getPairBrowserData()
 	{
-		global $ilDB;
+		global $DIC;
+
+		$ilDB = $DIC->database();
 
 		$data = array();
 		$result = $ilDB->queryF("SELECT * FROM rep_robj_xmpl_pair WHERE obj_fi = %s AND original_id IS NULL",
@@ -499,10 +524,9 @@ class ilObjMatchMemoPool extends ilObjectPlugin
 	 */
 	public function clipboardContainsValidItems()
 	{
-		/**
-		 * @var $ilDB ilDB
-		 */
-		global $ilDB;
+		global $DIC;
+
+		$ilDB = $DIC->database();
 
 		if(!array_key_exists('mpl_clipboard', $_SESSION))
 		{
@@ -545,7 +569,9 @@ class ilObjMatchMemoPool extends ilObjectPlugin
 	*/
 	function pasteFromClipboard()
 	{
-		global $ilDB;
+		global $DIC;
+
+		$ilDB = $DIC->database();
 
 		if (array_key_exists("mpl_clipboard", $_SESSION))
 		{
@@ -588,7 +614,9 @@ class ilObjMatchMemoPool extends ilObjectPlugin
 
 	public static function _lookupOnline($a_obj_id, $is_reference = false)
 	{
-		global $ilDB;
+		global $DIC;
+
+		$ilDB = $DIC->database();
 
 		if ($is_reference) $a_obj_id = ilObject::_lookupObjId($a_obj_id);
 		$result = $ilDB->queryF("SELECT isonline FROM rep_robj_xmpl_object WHERE obj_fi = %s",
@@ -605,7 +633,9 @@ class ilObjMatchMemoPool extends ilObjectPlugin
 
 	public static function _lookupPairCount($a_obj_id, $is_reference = false)
 	{
-		global $ilDB;
+		global $DIC;
+
+		$ilDB = $DIC->database();
 
 		if ($is_reference) $a_obj_id = ilObject::_lookupObjId($a_obj_id);
 		$result = $ilDB->queryF("SELECT paircount FROM rep_robj_xmpl_object WHERE obj_fi = %s",

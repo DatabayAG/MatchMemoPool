@@ -52,7 +52,10 @@ class ilObjMatchMemoPoolGUI extends ilObjectPluginGUI
   */
 	function performCommand($cmd)
 	{
-		global $ilAccess, $ilTabs;
+		global $DIC;
+
+		$ilAccess = $DIC->access();
+		$ilTabs = $DIC->tabs();
 
 		$next_class = $this->ctrl->getNextClass($this);
 		switch($next_class)
@@ -125,7 +128,11 @@ class ilObjMatchMemoPoolGUI extends ilObjectPluginGUI
 	*/
 	function infoScreen()
 	{
-		global $ilAccess, $ilUser, $lng, $ilCtrl, $tpl, $ilTabs;
+		global $DIC;
+
+		$lng = $DIC->language();
+		$ilCtrl = $DIC->ctrl();
+		$ilTabs = $DIC->tabs();
 
 		$ilTabs->setTabActive("info_short");
 
@@ -154,12 +161,8 @@ class ilObjMatchMemoPoolGUI extends ilObjectPluginGUI
 
 		$this->addInfoItems($info);
 
-
 		// forward the command
 		$ret = $ilCtrl->forwardCommand($info);
-
-
-		//$tpl->setContent($ret);
 	}
 	//
 	// DISPLAY TABS
@@ -174,7 +177,11 @@ class ilObjMatchMemoPoolGUI extends ilObjectPluginGUI
 	*/
 	function setTabs()
 	{
-		global $ilTabs, $ilCtrl, $ilAccess;
+		global $DIC;
+
+		$ilAccess = $DIC->access();
+		$ilCtrl = $DIC->ctrl();
+		$ilTabs = $DIC->tabs();
 
 		// tab for the "show content" command
 		if ($ilAccess->checkAccess("write", "", $this->object->getRefId()))
@@ -213,8 +220,10 @@ class ilObjMatchMemoPoolGUI extends ilObjectPluginGUI
 	*/
 	function editProperties()
 	{
-		global $ilAccess;
-		global $tpl, $ilTabs;
+		global $DIC;
+
+		$ilAccess = $DIC->access();
+		$ilTabs = $DIC->tabs();
 
 		$ilTabs->activateTab("properties");
 		
@@ -258,9 +267,10 @@ class ilObjMatchMemoPoolGUI extends ilObjectPluginGUI
 	*/
 	public function pairs($arrFilter = null)
 	{
-		global $rbacsystem;
-		global $ilUser;
-		global $ilTabs;
+		global $DIC;
+
+		$rbacsystem = $DIC->rbac()->system();
+		$ilTabs = $DIC->tabs();
 
 		$ilTabs->activateTab("pairs");
 
@@ -349,7 +359,10 @@ class ilObjMatchMemoPoolGUI extends ilObjectPluginGUI
 	*/
 	public function editPair($checkonly = FALSE)
 	{
-		global $ilTabs;
+		global $DIC;
+
+		$ilTabs = $DIC->tabs();
+
 		$ilTabs->activateTab("pairs");
 
 		$this->ctrl->saveParameter($this, 'pid');
@@ -497,7 +510,10 @@ class ilObjMatchMemoPoolGUI extends ilObjectPluginGUI
 
 	function importPairs()
 	{
-		global $ilTabs;
+		global $DIC;
+
+		$ilTabs = $DIC->tabs();
+
 		$ilTabs->activateTab("pairs");
 
 		$save = ((strcmp($this->ctrl->getCmd(), "importCSV") == 0)) ? true : false;

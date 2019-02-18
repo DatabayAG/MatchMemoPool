@@ -50,7 +50,10 @@ class ilMatchMemoPairBrowserTableGUI extends ilTable2GUI
 	{
 		parent::__construct($a_parent_obj, $a_parent_cmd);
 
-		global $lng, $ilCtrl;
+		global $DIC;
+
+		$lng = $DIC->language();
+		$ilCtrl = $DIC->ctrl();
 
 		$this->lng = $lng;
 		$this->ctrl = $ilCtrl;

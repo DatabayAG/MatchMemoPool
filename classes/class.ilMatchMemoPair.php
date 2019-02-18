@@ -43,7 +43,10 @@ class ilMatchMemoPair
 	*/
 	function __construct($title = '', $author = '', $description = '', $card1 = '', $card2 = '', $solution = '', $created = 0, $updated = 0, $id = 0, $mpl = 0)
 	{
-		global $ilUser;
+		global $DIC;
+
+		$ilUser = $DIC->user();
+
 		$author = (strlen($author)) ? $author : $ilUser->getFullname();
 		include_once "./Services/Component/classes/class.ilPlugin.php";
 		$this->plugin = ilPlugin::getPluginObject(IL_COMP_SERVICE, "Repository", "robj", "MatchMemoPool");
@@ -72,7 +75,10 @@ class ilMatchMemoPair
 	
 	public static function _loadFromDB($id)
 	{
-		global $ilDB;
+		global $DIC;
+
+		$ilDB = $DIC->database();
+
 		$obj = null;
 		$result = $ilDB->queryF("SELECT * FROM rep_robj_xmpl_pair WHERE pair_id = %s",
 			array("integer"),
@@ -95,7 +101,11 @@ class ilMatchMemoPair
 
 	public function copyToPool($mpl)
 	{
-		global $ilDB, $ilUser;
+		global $DIC;
+
+		$ilDB = $DIC->database();
+		$ilUser = $DIC->user();
+
 		$next_id = $ilDB->nextId('rep_robj_xmpl_pair');
 		$result = $ilDB->manipulateF("INSERT INTO rep_robj_xmpl_pair (pair_id, obj_fi, owner, title, author, description, card1, card2, solution, created, tstamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
 			array('integer','integer','integer','text','text','text','text','text','text','integer','integer'),
@@ -120,7 +130,11 @@ class ilMatchMemoPair
 	
 	protected function createEmptyPair()
 	{
-		global $ilDB, $ilUser;
+		global $DIC;
+
+		$ilDB = $DIC->database();
+		$ilUser = $DIC->user();
+
 		$next_id = $ilDB->nextId('rep_robj_xmpl_pair');
 		$result = $ilDB->manipulateF("INSERT INTO rep_robj_xmpl_pair (pair_id, obj_fi, owner, title, author, description, card1, card2, solution, created, tstamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
 			array('integer','integer','integer','text','text','text','text','text','text','integer','integer'),
@@ -143,7 +157,10 @@ class ilMatchMemoPair
 	
 	public function duplicateForMatchMemo()
 	{
-		global $ilDB, $ilUser;
+		global $DIC;
+
+		$ilDB = $DIC->database();
+
 		$new_id = $this->createEmptyPair();
 		include_once("./Services/RTE/classes/class.ilRTE.php");
 		$result = $ilDB->manipulateF("UPDATE rep_robj_xmpl_pair SET title = %s, author = %s, description = %s, card1 = %s, card2 = %s, solution = %s, original_id = %s, tstamp = %s WHERE pair_id = %s",
